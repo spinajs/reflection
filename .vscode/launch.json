@@ -1,0 +1,65 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run INDEX",
+            "program": "${workspaceRoot}/lib/index.js",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "args": [
+                "-a",
+                "test_app"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Run SPINA CLI",
+            "program": "${workspaceRoot}/lib/bin/spine.js",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "args": [
+                "orm:refresh",
+                "--connection",
+                "test"
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            },
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Reflection tests",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "-r",
+                "ts-node/register",
+                "--timeout",
+                "999999",
+                "--colors",
+                "${workspaceFolder}/test/**/*.ts",
+            ],
+            "protocol": "inspector"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Mocha Current File",
+            "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+            "args": [
+                "--timeout",
+                "999999",
+                "--colors",
+                "${file}"
+            ],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
+        }
+    ]
+}
