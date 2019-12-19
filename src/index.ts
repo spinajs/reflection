@@ -1,12 +1,11 @@
 import * as fs from 'fs';
 import * as glob from 'glob';
-import * as _ from 'lodash';
 import * as path from 'path';
 import * as ts from "typescript";
 
 import { Configuration } from '@spinajs/configuration';
 import { AsyncResolveStrategy, DI } from '@spinajs/di';
-import { ArgumentException, IOException } from '@spinajs/exceptions';
+import { IOException } from '@spinajs/exceptions';
 
 /**
  * Class info structure
@@ -105,7 +104,7 @@ export class TypescriptCompiler {
  * @param configPath - dir paths taken from app config eg. "system.dirs.controllers". Path MUST be avaible in configuration
  * 
  */
-export function ResolveFromFiles(filter: string, configPath: string){
+export function ResolveFromFiles(filter: string, configPath: string) {
     return _listOrResolveFromFiles(filter, configPath, true);
 }
 
@@ -117,7 +116,7 @@ export function ResolveFromFiles(filter: string, configPath: string){
  * @param configPath - dir paths taken from app config eg. "system.dirs.controllers". Path MUST be avaible in configuration
  * 
  */
-export function ListFromFiles(filter : string, configPath: string){
+export function ListFromFiles(filter: string, configPath: string) {
     return _listOrResolveFromFiles(filter, configPath, false);
 }
 
@@ -125,19 +124,11 @@ export function ListFromFiles(filter : string, configPath: string){
 function _listOrResolveFromFiles(filter: string, configPath: string, resolve: boolean) {
     return (target: any, propertyKey: string | symbol) => {
 
-        if (!filter || _.isEmpty(filter)) {
-            throw new ArgumentException(`filter parameter is null or empty`);
-        }
-
-        if (!configPath || _.isEmpty(configPath)) {
-            throw new ArgumentException(`configPath parameter is null or empty`);
-        }
-
         let instances: Array<ClassInfo<any>> | Promise<Array<ClassInfo<any>>> = null;
 
         const getter = () => {
             if (!instances) {
-                instances = _loadInstances();
+                instances = (!filter || !configPath) ? [] : _loadInstances();
             }
 
             return instances;
@@ -197,4 +188,3 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
     }
 }
 
- 

@@ -1,6 +1,6 @@
 {
   "name": "@spinajs/reflection",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "SpinaJS reflection helpers",
   "main": "lib/index.js",
   "private": false,
@@ -28,7 +28,6 @@
     "@spinajs/di": "^1.0.3",
     "@spinajs/exceptions": "^1.0.0",
     "@types/mocha": "^5.2.7",
-    "lodash": "^4.17.14"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",

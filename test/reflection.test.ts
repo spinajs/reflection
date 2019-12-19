@@ -176,4 +176,13 @@ describe("Reflection tests", () => {
         expect(target.services[0].instance).to.be.null;
 
     })
+
+    it("should load empty array if args missing", ()=>{
+        const target = {
+            services: null as any[]
+        };
+
+        ResolveFromFiles("/**/*.{ts,js}", null)(target, "services");
+        expect(target.services).to.be.an("array").with.length(0);
+    })
 });
