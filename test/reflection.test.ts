@@ -182,7 +182,7 @@ describe("Reflection tests", () => {
             services: null as any[]
         };
 
-        ResolveFromFiles("/**/*.{ts,js}", null)(target, "services");
+        ResolveFromFiles("/**/*.{ts,js}", "fake.config.parameter")(target, "services");
         expect(target.services).to.be.an("array").with.length(0);
     })
 });

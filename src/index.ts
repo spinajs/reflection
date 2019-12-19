@@ -5,7 +5,7 @@ import * as ts from "typescript";
 
 import { Configuration } from '@spinajs/configuration';
 import { AsyncResolveStrategy, DI } from '@spinajs/di';
-import { IOException } from '@spinajs/exceptions';
+import { IOException, ArgumentException } from '@spinajs/exceptions';
 
 /**
  * Class info structure
@@ -124,11 +124,19 @@ export function ListFromFiles(filter: string, configPath: string) {
 function _listOrResolveFromFiles(filter: string, configPath: string, resolve: boolean) {
     return (target: any, propertyKey: string | symbol) => {
 
-        let instances: Array<ClassInfo<any>> | Promise<Array<ClassInfo<any>>> = null;
+        if(!filter){
+            throw new ArgumentException("filter parameter is null or empty");
+        }
 
+        if(!configPath){
+            throw new ArgumentException("configPath parameter is null or empty");
+        }
+
+        let instances: Array<ClassInfo<any>> | Promise<Array<ClassInfo<any>>> = null;
+        
         const getter = () => {
             if (!instances) {
-                instances = (!filter || !configPath) ? [] : _loadInstances();
+                instances = _loadInstances();
             }
 
             return instances;
@@ -145,7 +153,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
             const directories = config.get<string[]>(configPath);
 
             if (!directories || directories.length === 0) {
-                return;
+                return [];
             }
 
             let promised = false;
