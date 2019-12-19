@@ -27,7 +27,7 @@
     "@spinajs/configuration": "^1.0.0",
     "@spinajs/di": "^1.0.3",
     "@spinajs/exceptions": "^1.0.0",
-    "@types/mocha": "^5.2.7",
+    "@types/mocha": "^5.2.7"
   },
   "devDependencies": {
     "@types/bunyan": "^1.8.6",
