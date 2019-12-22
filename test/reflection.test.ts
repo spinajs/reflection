@@ -29,9 +29,7 @@ export class MockCfg extends Configuration {
                 throw: [dir("./test-services/throw")],
                 mixed: [dir("./test-services/mixed")],
                 throwasync: [dir("./test-services/throwasync")],
-
-
-
+                empty: [dir("./test-services/empty")]
             }
         },
 
@@ -182,7 +180,16 @@ describe("Reflection tests", () => {
             services: null as any[]
         };
 
-        ResolveFromFiles("/**/*.{ts,js}", "fake.config.parameter")(target, "services");
+        ListFromFiles("/**/*.{ts,js}", "fake.config.parameter")(target, "services");
+        expect(target.services).to.be.an("array").with.length(0);
+    })
+
+    it("should load empty array if directory is empty", ()=>{
+        const target = {
+            services: null as any[]
+        };
+
+        ListFromFiles("/**/*.{ts,js}", "system.dirs.empty")(target, "services");
         expect(target.services).to.be.an("array").with.length(0);
     })
 });
