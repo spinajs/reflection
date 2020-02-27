@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/spinajs/reflection#readme",
   "dependencies": {
-    "@spinajs/configuration": "^1.0.0",
+    "@spinajs/configuration": "^1.0.5",
     "@spinajs/di": "^1.0.3",
     "@spinajs/exceptions": "^1.0.0",
     "@types/mocha": "^5.2.7"
