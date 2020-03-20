@@ -1,6 +1,6 @@
-import { AsyncResolveStrategy, IContainer } from "@spinajs/di";
+import { AsyncModule, IContainer } from "@spinajs/di";
 
-export class FooService extends AsyncResolveStrategy {
+export class FooService extends AsyncModule {
 
     public Counter = 0;
     

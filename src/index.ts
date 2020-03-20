@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as ts from "typescript";
 
 import { Configuration } from '@spinajs/configuration';
-import { AsyncResolveStrategy, DI } from '@spinajs/di';
+import { AsyncModule, DI } from '@spinajs/di';
 import { IOFail, InvalidArgument } from '@spinajs/exceptions';
 
 /**
@@ -169,7 +169,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
                     }
 
                     if (resolve) {
-                        if (type.prototype instanceof AsyncResolveStrategy) {
+                        if (type.prototype instanceof AsyncModule) {
                             promised = true;
                             return (DI.resolve(type) as any).then((instance: any) => {
                                 return {
