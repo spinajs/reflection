@@ -5,7 +5,7 @@ import * as ts from "typescript";
 
 import { Configuration } from '@spinajs/configuration';
 import { AsyncResolveStrategy, DI } from '@spinajs/di';
-import { IOException, ArgumentException } from '@spinajs/exceptions';
+import { IOFail, InvalidArgument } from '@spinajs/exceptions';
 
 /**
  * Class info structure
@@ -125,11 +125,11 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
     return (target: any, propertyKey: string | symbol) => {
 
         if(!filter){
-            throw new ArgumentException("filter parameter is null or empty");
+            throw new InvalidArgument("filter parameter is null or empty");
         }
 
         if(!configPath){
-            throw new ArgumentException("configPath parameter is null or empty");
+            throw new InvalidArgument("configPath parameter is null or empty");
         }
 
         let instances: Array<ClassInfo<any>> | Promise<Array<ClassInfo<any>>> = null;
@@ -165,7 +165,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
                     const type = require(f)[name];
 
                     if (!type) {
-                        throw new IOException(`cannot find class ${name} in file ${f}`);
+                        throw new IOFail(`cannot find class ${name} in file ${f}`);
                     }
 
                     if (resolve) {

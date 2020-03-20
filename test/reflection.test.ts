@@ -8,7 +8,7 @@ import 'mocha';
 import { join, normalize, resolve } from 'path';
 import { ResolveFromFiles, ListFromFiles } from '../src';
 import { FooService } from './test-services/singletons/FooService';
-import { IOException } from '@spinajs/exceptions';
+import { IOFail } from '@spinajs/exceptions';
 
 export function dir(path: string) {
     return resolve(normalize(join(__dirname, path)));
@@ -123,7 +123,7 @@ describe("Reflection tests", () => {
         expect(() => {
             // tslint:disable-next-line: no-unused-expression-chai
             target.services;
-        }).to.throw(IOException);
+        }).to.throw(IOFail);
     })
 
     it("Should reject on async class not found", () => {
