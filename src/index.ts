@@ -185,7 +185,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
 
                     return {
                         file: f,
-                        instance: resolve ? DI.resolve(type) : null,
+                        instance: null,
                         name,
                         type,
                     };
