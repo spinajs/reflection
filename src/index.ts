@@ -6,6 +6,7 @@ import * as ts from "typescript";
 import { Configuration } from '@spinajs/configuration';
 import { AsyncModule, DI } from '@spinajs/di';
 import { IOFail, InvalidArgument } from '@spinajs/exceptions';
+import { LogModule } from "@spinajs/log";
 
 /**
  * Class info structure
@@ -149,7 +150,8 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
 
         function _loadInstances(): Promise<Array<ClassInfo<any>>> | Array<ClassInfo<any>> {
 
-            const config = DI.resolve<Configuration>(Configuration);
+            const config = DI.resolve(Configuration);
+            const logger = DI.resolve(LogModule).getLogger();
             const directories = config.get<string[]>(configPath);
 
             if (!directories || directories.length === 0) {
@@ -161,6 +163,9 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
                 .filter((d: string) => fs.existsSync(d))
                 .flatMap((d: string) => glob.sync(path.join(d, filter)))
                 .map((f: string) => {
+
+                    logger.trace(`Loading file ${f}`);
+
                     const name = path.parse(f).name;
                     const type = require(f)[name];
 
@@ -185,7 +190,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
 
                     return {
                         file: f,
-                        instance: null,
+                        instance: resolve ? DI.resolve(type) : null,
                         name,
                         type,
                     };

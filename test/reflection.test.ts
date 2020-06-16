@@ -9,6 +9,7 @@ import { join, normalize, resolve } from 'path';
 import { ResolveFromFiles, ListFromFiles } from '../src';
 import { FooService } from './test-services/singletons/FooService';
 import { IOFail } from '@spinajs/exceptions';
+import { SpinaJsDefaultLog, LogModule } from '@spinajs/log';
 
 export function dir(path: string) {
     return resolve(normalize(join(__dirname, path)));
@@ -44,16 +45,20 @@ describe("Reflection tests", () => {
     beforeEach(() => {
         DI.clear();
         DI.register(MockCfg).as(Configuration);
+        DI.register(SpinaJsDefaultLog).as(LogModule);
+
 
         FooService.Counter = 0;
     })
 
-    it("Should load services", () => {
+    it("Should load services", async () => {
         const target = {
             services: [] as any[]
         };
 
         ResolveFromFiles("/**/*.{ts,js}", "system.dirs.singletons")(target, "services");
+
+        await target.services;
 
         expect(target.services).to.be.not.null;
         expect(target.services).to.be.an("array").that.have.length(2);
