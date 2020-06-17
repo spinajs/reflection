@@ -65,7 +65,7 @@ export class TypescriptCompiler {
                 // Walk the tree to search for classes
 
                 ts.forEachChild(sourceFile, this.walkClassNode(className, this.walkMemberNode((method: ts.MethodDeclaration) => {
-                    members.set(method.name.getText(), method);
+                    members.set((method.name as any).text, method);
                 })));
             }
         }
@@ -77,7 +77,6 @@ export class TypescriptCompiler {
         return (node: ts.Node) => {
             if (node.kind === ts.SyntaxKind.ClassDeclaration) {
                 const cldecl = node as ts.ClassDeclaration;
-
                 if (cldecl.name.text === className) {
                     callback(cldecl);
                 }
@@ -86,11 +85,15 @@ export class TypescriptCompiler {
     }
 
     private walkMemberNode(callback: (methodNode: ts.MethodDeclaration) => void) {
-        return (node: ts.Node) => {
-            if (node.kind === ts.SyntaxKind.MethodDeclaration) {
-                const method = node as ts.MethodDeclaration;
-                callback(method);
+        return (node: ts.ClassDeclaration) => {
+            for(const member of node.members)
+            {
+                if (member.kind === ts.SyntaxKind.MethodDeclaration) {
+                    const method = member as ts.MethodDeclaration;
+                    callback(method);
+                }
             }
+           
         }
     }
 }
@@ -125,16 +128,16 @@ export function ListFromFiles(filter: string, configPath: string) {
 function _listOrResolveFromFiles(filter: string, configPath: string, resolve: boolean) {
     return (target: any, propertyKey: string | symbol) => {
 
-        if(!filter){
+        if (!filter) {
             throw new InvalidArgument("filter parameter is null or empty");
         }
 
-        if(!configPath){
+        if (!configPath) {
             throw new InvalidArgument("configPath parameter is null or empty");
         }
 
         let instances: Array<ClassInfo<any>> | Promise<Array<ClassInfo<any>>> = null;
-        
+
         const getter = () => {
             if (!instances) {
                 instances = _loadInstances();
@@ -160,7 +163,14 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
 
             let promised = false;
             const result = directories.map((d: string) => path.normalize(d))
-                .filter((d: string) => fs.existsSync(d))
+                .filter((d: string) => {
+                    const exists = fs.existsSync(d);
+                    if (!exists) {
+                        logger.warn(`Directory ${d} not exists`);
+                    }
+                    
+                    return exists;
+                })
                 .flatMap((d: string) => glob.sync(path.join(d, filter)))
                 .map((f: string) => {
 
