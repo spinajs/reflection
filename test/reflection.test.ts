@@ -1,4 +1,4 @@
-import { Configuration } from '@spinajs/configuration';
+import { FrameworkConfiguration, Configuration } from '@spinajs/configuration';
 import { DI } from '@spinajs/di';
 import * as chai from 'chai';
 import * as chaiAsPromised from 'chai-as-promised';
@@ -19,7 +19,7 @@ const expect = chai.expect;
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-export class MockCfg extends Configuration {
+export class MockCfg extends FrameworkConfiguration {
 
     private conf = {
         system: {
