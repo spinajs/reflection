@@ -61,7 +61,7 @@ export class TypescriptCompiler {
         const members: Map<string, ts.MethodDeclaration> = new Map<string, ts.MethodDeclaration>();
 
         for (const sourceFile of this.compiled.getSourceFiles()) {
-            if (!sourceFile.isDeclarationFile) {
+            if (sourceFile.isDeclarationFile) {
                 // Walk the tree to search for classes
 
                 ts.forEachChild(sourceFile, this.walkClassNode(className, this.walkMemberNode((method: ts.MethodDeclaration) => {
