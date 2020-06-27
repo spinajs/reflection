@@ -155,10 +155,15 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
 
             const config = DI.resolve(Configuration);
             const logger = DI.resolve(LogModule).getLogger();
-            const directories = config.get<string[]>(configPath);
+            let directories = config.get<string[]>(configPath);
 
             if (!directories || directories.length === 0) {
                 return [];
+            }
+
+            if(!Array.isArray(directories))
+            {
+                directories = [directories];
             }
 
             let promised = false;
