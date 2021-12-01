@@ -10,6 +10,7 @@ import { ResolveFromFiles, ListFromFiles } from '../src';
 import { FooService } from './test-services/singletons/FooService';
 import { IOFail } from '@spinajs/exceptions';
 import { SpinaJsDefaultLog, LogModule } from '@spinajs/log';
+import { SomeMatcher1TestClass } from './test-services/matcher/SomeMatcher1';
 
 export function dir(path: string) {
     return resolve(normalize(join(__dirname, path)));
@@ -30,7 +31,9 @@ export class MockCfg extends FrameworkConfiguration {
                 throw: [dir("./test-services/throw")],
                 mixed: [dir("./test-services/mixed")],
                 throwasync: [dir("./test-services/throwasync")],
-                empty: [dir("./test-services/empty")]
+                empty: [dir("./test-services/empty")],
+                matcher: [dir("./test-services/matcher")],
+
             }
         },
 
@@ -65,6 +68,26 @@ describe("Reflection tests", () => {
         expect(target.services[0]).to.include({
             name: "FooService"
         }).and.to.have.property("instance").not.null;
+    })
+
+    it("Should load services with type matcher", () =>{ 
+        const target = {
+            services: [] as any[]
+        };
+
+        ResolveFromFiles("/**/*.{ts,js}", "system.dirs.matcher", (name) => {
+            return `${name}TestClass`;
+        })(target, "services");
+
+        const services = target.services;
+        const cache = DI.RootContainer.Cache as any;
+
+        expect(services).to.be.an("array").that.have.length(2);
+        expect(cache).to.be.an("Map");
+        expect(cache.get("SomeMatcher1TestClass")).to.not.null;
+
+        
+        expect(DI.resolve(SomeMatcher1TestClass)).to.be.not.null;
     })
 
     it("Should load services as singletons default", () => {

@@ -5,7 +5,7 @@ import * as ts from 'typescript';
 
 import { Configuration } from '@spinajs/configuration';
 import { AsyncModule, DI } from '@spinajs/di';
-import { IOFail, InvalidArgument, Exception } from '@spinajs/exceptions';
+import { InvalidArgument, Exception } from '@spinajs/exceptions';
 import { LogModule } from '@spinajs/log';
 
 /**
@@ -199,7 +199,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
                 return {
                   file: f,
                   instance,
-                  name,
+                  nameToResolve,
                   type,
                 };
               });
@@ -209,7 +209,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
           return {
             file: f,
             instance: resolve ? DI.resolve(type) : null,
-            name,
+            nameToResolve,
             type,
           };
         });
