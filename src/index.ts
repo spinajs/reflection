@@ -199,7 +199,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
                 return {
                   file: f,
                   instance,
-                  nameToResolve,
+                  name: nameToResolve,
                   type,
                 };
               });
@@ -209,7 +209,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
           return {
             file: f,
             instance: resolve ? DI.resolve(type) : null,
-            nameToResolve,
+            name: nameToResolve,
             type,
           };
         });

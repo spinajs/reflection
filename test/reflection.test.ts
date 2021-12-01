@@ -1,3 +1,4 @@
+import { ReflectionException } from './../src/index';
 import { FrameworkConfiguration, Configuration } from '@spinajs/configuration';
 import { DI } from '@spinajs/di';
 import * as chai from 'chai';
@@ -8,7 +9,6 @@ import 'mocha';
 import { join, normalize, resolve } from 'path';
 import { ResolveFromFiles, ListFromFiles } from '../src';
 import { FooService } from './test-services/singletons/FooService';
-import { IOFail } from '@spinajs/exceptions';
 import { SpinaJsDefaultLog, LogModule } from '@spinajs/log';
 import { SomeMatcher1TestClass } from './test-services/matcher/SomeMatcher1';
 
@@ -82,7 +82,7 @@ describe("Reflection tests", () => {
         const services = target.services;
         const cache = DI.RootContainer.Cache as any;
 
-        expect(services).to.be.an("array").that.have.length(2);
+        expect(services).to.be.an("array").that.have.length(1);
         expect(cache).to.be.an("Map");
         expect(cache.get("SomeMatcher1TestClass")).to.not.null;
 
@@ -151,7 +151,7 @@ describe("Reflection tests", () => {
         expect(() => {
             // tslint:disable-next-line: no-unused-expression-chai
             target.services;
-        }).to.throw(IOFail);
+        }).to.throw(ReflectionException);
     })
 
     it("Should reject on async class not found", () => {
