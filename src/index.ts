@@ -5,7 +5,7 @@ import * as ts from 'typescript';
 
 import { Configuration } from '@spinajs/configuration';
 import { AsyncModule, DI } from '@spinajs/di';
-import { IOFail, InvalidArgument } from '@spinajs/exceptions';
+import { IOFail, InvalidArgument, Exception } from '@spinajs/exceptions';
 import { LogModule } from '@spinajs/log';
 
 /**
@@ -29,6 +29,13 @@ export class ClassInfo<T> {
    * Resolved instance
    */
   public instance?: T;
+}
+
+/**
+ * Exception thrown when some error during reflection occurs
+ */
+export class ReflectionException extends Exception {
+
 }
 
 /**
@@ -108,8 +115,8 @@ export class TypescriptCompiler {
  * @param configPath - dir paths taken from app config eg. "system.dirs.controllers". Path MUST be avaible in configuration
  *
  */
-export function ResolveFromFiles(filter: string, configPath: string) {
-  return _listOrResolveFromFiles(filter, configPath, true);
+export function ResolveFromFiles(filter: string, configPath: string, typeMatcher?: (fileName: string) => string) {
+  return _listOrResolveFromFiles(filter, configPath, true, typeMatcher);
 }
 
 /**
@@ -119,11 +126,11 @@ export function ResolveFromFiles(filter: string, configPath: string) {
  * @param configPath - dir paths taken from app config eg. "system.dirs.controllers". Path MUST be avaible in configuration
  *
  */
-export function ListFromFiles(filter: string, configPath: string) {
-  return _listOrResolveFromFiles(filter, configPath, false);
+export function ListFromFiles(filter: string, configPath: string, typeMatcher?: (fileName: string) => string) {
+  return _listOrResolveFromFiles(filter, configPath, false, typeMatcher);
 }
 
-function _listOrResolveFromFiles(filter: string, configPath: string, resolve: boolean) {
+function _listOrResolveFromFiles(filter: string, configPath: string, resolve: boolean, typeMatcher?: (fileName: string) => string) {
   return (target: any, propertyKey: string | symbol) => {
     if (!filter) {
       throw new InvalidArgument('filter parameter is null or empty');
@@ -162,6 +169,7 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
       }
 
       let promised = false;
+
       const result = directories
         .map((d: string) => path.normalize(d))
         .filter((d: string) => {
@@ -177,10 +185,11 @@ function _listOrResolveFromFiles(filter: string, configPath: string, resolve: bo
           logger.trace(`Loading file ${f}`);
 
           const name = path.parse(f).name;
-          const type = require(f)[name];
+          const nameToResolve = typeMatcher ? typeMatcher(name) : name;
+          const type = require(f)[nameToResolve];
 
           if (!type) {
-            throw new IOFail(`cannot find class ${name} in file ${f}`);
+            throw new ReflectionException(`cannot find class ${nameToResolve} in file ${f}`);
           }
 
           if (resolve) {
