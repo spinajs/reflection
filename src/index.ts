@@ -64,21 +64,18 @@ export class TypescriptCompiler {
   public getClassMembers(className: string) {
     const members: Map<string, ts.MethodDeclaration> = new Map<string, ts.MethodDeclaration>();
 
-    for (const sourceFile of this.compiled.getSourceFiles()) {
-      if (sourceFile.isDeclarationFile) {
-        // Walk the tree to search for classes
+    const sourceFile = this.compiled.getSourceFile(this.tsFile)
 
-        ts.forEachChild(
-          sourceFile,
-          this.walkClassNode(
-            className,
-            this.walkMemberNode((method: ts.MethodDeclaration) => {
-              members.set((method.name as any).text, method);
-            }),
-          ),
-        );
-      }
-    }
+    // Walk the tree to search for classes
+    ts.forEachChild(
+      sourceFile,
+      this.walkClassNode(
+        className,
+        this.walkMemberNode((method: ts.MethodDeclaration) => {
+          members.set((method.name as any).text, method);
+        }),
+      ),
+    );
 
     return members;
   }
